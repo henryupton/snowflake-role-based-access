@@ -23,7 +23,7 @@ resource "snowflake_role" "functional_roles" {
 module "tables" {
   source = "./grants/table"
 
-  role_name = var.name
+  role_name = snowflake_role.functional_roles.name
   tables    = var.tables
 
   providers = {

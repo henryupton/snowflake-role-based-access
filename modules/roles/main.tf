@@ -22,10 +22,15 @@ module "roles" {
 
   comment = each.value.comment
 
-  tables = each.value.tables
-  pipes  = each.value.pipes
-  views  = each.value.views
-  stages = each.value.stages
+  tables               = each.value.tables
+  pipes                = each.value.pipes
+  views                = each.value.views
+  stages               = each.value.stages
+  tasks                = each.value.tasks
+  streams              = each.value.streams
+  external_tables      = each.value.external_tables
+  warehouses           = each.value.warehouses
+  storage_integrations = each.value.storage_integrations
 
   providers = {
     snowflake               = snowflake

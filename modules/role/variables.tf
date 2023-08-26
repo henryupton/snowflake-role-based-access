@@ -15,6 +15,13 @@ variable "tables" {
   default = {}
 }
 
+variable "pipes" {
+  type = map(object({
+    grants = list(string)
+  }))
+  default = {}
+}
+
 variable "stages" {
   type = map(object({
     grants = list(string)
@@ -29,7 +36,35 @@ variable "views" {
   default = {}
 }
 
-variable "pipes" {
+variable "tasks" {
+  type = map(object({
+    grants = list(string)
+  }))
+  default = {}
+}
+
+variable "streams" {
+  type = map(object({
+    grants = list(string)
+  }))
+  default = {}
+}
+
+variable "external_tables" {
+  type = map(object({
+    grants = list(string)
+  }))
+  default = {}
+}
+
+variable "warehouses" {
+  type = map(object({
+    grants = list(string)
+  }))
+  default = {}
+}
+
+variable "storage_integrations" {
   type = map(object({
     grants = list(string)
   }))
