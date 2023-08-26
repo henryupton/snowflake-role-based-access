@@ -13,18 +13,19 @@ terraform {
   }
 }
 
-resource "snowflake_role" "functional_roles" {
-  name    = upper(var.name)
-  comment = var.comment
+module "roles" {
+  for_each = var.roles
 
-  provider = snowflake.securityadmin
-}
+  source = "../role"
 
-module "tables" {
-  source = "./grants/table"
+  name = each.key
 
-  role_name = var.name
-  tables    = var.tables
+  comment = each.value.comment
+
+  tables = each.value.tables
+  pipes  = each.value.pipes
+  views  = each.value.views
+  stages = each.value.stages
 
   providers = {
     snowflake               = snowflake
@@ -35,5 +36,5 @@ module "tables" {
 }
 
 output "debug" {
-  value = module.tables.debug
+  value = module.roles
 }
