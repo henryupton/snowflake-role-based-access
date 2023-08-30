@@ -119,8 +119,8 @@ resource "snowflake_table_grant" "futures" {
 
 output "debug" {
   value = {
-    "00_input"            = local.input
-    "04_futures_by_grant" = local.futures_by_grant
-    "05_tables_by_grant"  = local.tables_by_grant
+    input            = local.input
+    futures_by_grant = local.futures_by_grant
+    tables_by_grant  = local.tables_by_grant
   }
 }
