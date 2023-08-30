@@ -20,11 +20,21 @@ resource "snowflake_role" "functional_roles" {
   provider = snowflake.securityadmin
 }
 
+module "parse_schema_wildcards_for_tables" {
+  source = "./parser/schema"
+
+  payload = var.tables
+
+  providers = {
+    snowflake = snowflake
+  }
+}
+
 module "tables" {
   source = "./grants/table"
 
   role_name = snowflake_role.functional_roles.name
-  tables    = var.tables
+  tables    = module.parse_schema_wildcards_for_tables.output
 
   providers = {
     snowflake               = snowflake
@@ -35,5 +45,13 @@ module "tables" {
 }
 
 output "debug" {
-  value = module.tables.debug
+  value = {
+    "00_schema_input"  = module.parse_schema_wildcards_for_tables.input
+    "01_schema_output" = module.parse_schema_wildcards_for_tables.output
+
+    "04_table_input" = module.tables.debug.input
+
+    "08_future_grants" = module.tables.debug.futures_by_grant
+    "09_table_grants"  = module.tables.debug.tables_by_grant
+  }
 }
