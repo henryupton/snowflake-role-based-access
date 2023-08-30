@@ -6,91 +6,89 @@ terraform {
       configuration_aliases = [
         snowflake,
         snowflake.securityadmin,
-        snowflake.useradmin,
-        snowflake.accountadmin,
       ]
     }
   }
 }
 
-locals {
-  input = {
-    for k, v in var.tables : lower(k) => {
-      database = split(".", k)[0]
-      schema   = split(".", k)[1]
-      name     = split(".", k)[2]
+module "parse_input" {
+  source = "../../parser/object/input"
 
-      grants            = v.grants
-      with_grant_option = coalesce(v.with_grant_option, false)
-    }
-  }
+  payload = var.tables
 
-  # Only grant futures on entire schemas.
-  futures = {
-    for k, v in local.input : "${v.database}.${v.schema}" => {
-      database = upper(v.database)
-      schema   = upper(v.schema)
-
-      grants            = v.grants
-      with_grant_option = v.with_grant_option
-    } if v.name == "*"
-  }
-
-  _futures_by_grant = flatten([
-    for k, v in local.futures : [
-      for g in v.grants : {
-        database = v.database
-        schema   = v.schema
-
-        grant             = g
-        with_grant_option = v.with_grant_option
-      }
-    ]
-  ])
-  futures_by_grant = {
-    for i in local._futures_by_grant : lower("${i.database}.${i.schema}|${i.grant}") => i
+  providers = {
+    snowflake = snowflake
   }
 }
 
+#module "parse_futures" {
+#  source = "../../parser/object/futures"
+#
+#  payload = module.parse_input.return
+#
+#  providers = {
+#    snowflake = snowflake
+#  }
+#}
+
 # Retrieve all tables in each of the provided schemas.
-data "snowflake_tables" "table_wildcard" {
-  for_each = local.input
+data "snowflake_tables" "tables" {
+  for_each = module.parse_input.return
 
   database = upper(each.value.database)
   schema   = upper(each.value.schema)
 }
 
-locals {
-  resolved_wildcards = flatten([
-    for k, v in local.input : [
-      for t in coalesce(data.snowflake_tables.table_wildcard[k].tables, []) : [
-        for g in v.grants : {
-          database = upper(t.database)
-          schema   = upper(t.schema)
-          name     = upper(t.name)
+module "resolve_wildcards" {
+  for_each = module.parse_input.return
 
-          fqn = upper("${t.database}.${t.schema}.${t.name}")
+  source = "../../parser/object/resolve"
 
-          pattern_matched = k
+  payload    = module.parse_input.return
+  candidates = data.snowflake_tables.tables[each.key].tables
 
-          grant             = g
-          with_grant_option = v.with_grant_option
-        }
-        if startswith(
-          lower(t.name),
-          lower(split("*", v.name)[0])  # Match tables which share the prefix before the wildcard.
-        )
-      ]
-    ]
-  ])
-
-  tables_by_grant = {
-    for i in local.resolved_wildcards : lower("${i.database}.${i.schema}.${i.name}|${i.grant}")=> i
+  providers = {
+    snowflake = snowflake
   }
 }
 
+# Flatten the output of the resolution process.
+# BOILERPLATE BEGINS!
+locals {
+  objects_in_pattern = {
+    for object_pattern, object_map in module.resolve_wildcards : object_pattern => object_map.return
+    if length(object_map.return) > 0
+  }
+
+  flat_objects = flatten([
+    for object_pattern, object_map in local.objects_in_pattern : [
+      for k, v in object_map : {
+        key      = k
+        database = v.database
+        schema   = v.schema
+        name     = v.name
+
+        grant             = v.grant
+        with_grant_option = v.with_grant_option
+      }
+    ]
+  ])
+
+  flat_object_map = {
+    for obj in local.flat_objects : obj.key => {
+      database = obj.database
+      schema   = obj.schema
+      name     = obj.name
+
+      grant             = obj.grant
+      with_grant_option = obj.with_grant_option
+    }
+  }
+}
+# BOILERPLATE ENDS!
+
 resource "snowflake_table_grant" "grant" {
-  for_each = local.tables_by_grant
+  for_each = local.flat_object_map
 
   database_name = each.value.database
   schema_name   = each.value.schema
@@ -101,26 +99,31 @@ resource "snowflake_table_grant" "grant" {
 
   with_grant_option      = each.value.with_grant_option
   enable_multiple_grants = true
+
+  provider = snowflake.securityadmin
 }
 
-resource "snowflake_table_grant" "futures" {
-  for_each = local.futures_by_grant
-
-  database_name = each.value.database
-  schema_name   = each.value.schema
-
-  privilege = each.value.grant
-  roles     = [upper(var.role_name)]
-
-  on_future              = true
-  with_grant_option      = each.value.with_grant_option
-  enable_multiple_grants = true
-}
+#resource "snowflake_table_grant" "futures" {
+#  for_each = module.parse_futures.return
+#
+#  database_name = each.value.database
+#  schema_name   = each.value.schema
+#
+#  privilege = each.value.grant
+#  roles     = [upper(var.role_name)]
+#
+#  on_future              = true
+#  with_grant_option      = each.value.with_grant_option
+#  enable_multiple_grants = true
+#
+#  provider = snowflake.securityadmin
+#}
 
 output "debug" {
   value = {
-    input            = local.input
-    futures_by_grant = local.futures_by_grant
-    tables_by_grant  = local.tables_by_grant
+    input   = var.tables
+    objects = local.flat_object_map# module.flatten.return
+    #    futures_by_grant = module.parse_futures.return
+    #    tables_by_grant = module.resolve_wildcards.return
   }
 }

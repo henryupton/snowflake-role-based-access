@@ -11,7 +11,6 @@ terraform {
   }
 }
 
-
 locals {
   input = {
     for k, v in coalesce(var.payload, {}) : lower(k) => {
@@ -57,10 +56,6 @@ locals {
   }
 }
 
-output "input" {
-  value = local.input
-}
-
-output "output" {
+output "return" {
   value = local.resolved_wildcards
 }

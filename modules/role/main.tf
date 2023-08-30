@@ -13,7 +13,7 @@ terraform {
   }
 }
 
-resource "snowflake_role" "functional_roles" {
+resource "snowflake_role" "roles" {
   name    = upper(var.name)
   comment = var.comment
 
@@ -21,7 +21,7 @@ resource "snowflake_role" "functional_roles" {
 }
 
 module "parse_schema_wildcards_for_tables" {
-  source = "./parser/schema"
+  source = "./parser/schema/resolve"
 
   payload = var.tables
 
@@ -33,25 +33,24 @@ module "parse_schema_wildcards_for_tables" {
 module "tables" {
   source = "./grants/table"
 
-  role_name = snowflake_role.functional_roles.name
-  tables    = module.parse_schema_wildcards_for_tables.output
+  role_name = snowflake_role.roles.name
+  tables    = module.parse_schema_wildcards_for_tables.return
 
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
-    snowflake.useradmin     = snowflake.useradmin
-    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
 output "debug" {
   value = {
-    "00_schema_input"  = module.parse_schema_wildcards_for_tables.input
-    "01_schema_output" = module.parse_schema_wildcards_for_tables.output
+    "01_schema_output" = module.parse_schema_wildcards_for_tables.return
 
     "04_table_input" = module.tables.debug.input
 
-    "08_future_grants" = module.tables.debug.futures_by_grant
-    "09_table_grants"  = module.tables.debug.tables_by_grant
+    "05_temp" = module.tables.debug.objects
+
+#    "08_future_grants" = module.tables.debug.futures_by_grant
+#    "09_table_grants"  = module.tables.debug.tables_by_grant
   }
 }
