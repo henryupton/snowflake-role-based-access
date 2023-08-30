@@ -6,8 +6,6 @@ terraform {
       configuration_aliases = [
         snowflake,
         snowflake.securityadmin,
-        snowflake.useradmin,
-        snowflake.accountadmin,
       ]
     }
   }
@@ -47,6 +45,7 @@ output "debug" {
     "01_schema_output" = module.parse_schema_wildcards_for_tables.return
 
     "04_table_input" = module.tables.debug.input
+    "04_table_input_output" = module.tables.debug.input_output
 
     "05_temp" = module.tables.debug.objects
 

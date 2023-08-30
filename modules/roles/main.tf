@@ -6,8 +6,6 @@ terraform {
       configuration_aliases = [
         snowflake,
         snowflake.securityadmin,
-        snowflake.useradmin,
-        snowflake.accountadmin,
       ]
     }
   }
@@ -35,8 +33,6 @@ module "roles" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
-    snowflake.useradmin     = snowflake.useradmin
-    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
