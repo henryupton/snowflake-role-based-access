@@ -11,10 +11,21 @@ terraform {
   }
 }
 
+module "parse_schema_wildcards" {
+  source = "../../parser/schema/resolve"
+
+  payload = var.tables
+
+  providers = {
+    snowflake = snowflake
+  }
+}
+
+
 module "parse_input" {
   source = "../../parser/object/input"
 
-  payload = var.tables
+  payload = module.parse_schema_wildcards.return
 }
 
 module "parse_futures" {
@@ -23,7 +34,6 @@ module "parse_futures" {
   payload = module.parse_input.return
 }
 
-# Retrieve all tables in each of the provided schemas.
 data "snowflake_tables" "tables" {
   for_each = module.parse_input.return
 

@@ -18,21 +18,23 @@ resource "snowflake_role" "roles" {
   provider = snowflake.securityadmin
 }
 
-module "parse_schema_wildcards_for_tables" {
-  source = "./parser/schema/resolve"
-
-  payload = var.tables
-
-  providers = {
-    snowflake = snowflake
-  }
-}
-
 module "tables" {
   source = "./grants/table"
 
   role_name = snowflake_role.roles.name
-  tables    = module.parse_schema_wildcards_for_tables.return
+  tables    = var.tables
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "stages" {
+  source = "./grants/stage"
+
+  role_name = snowflake_role.roles.name
+  stages    = var.stages
 
   providers = {
     snowflake               = snowflake
@@ -44,5 +46,8 @@ output "debug" {
   value = {
     table_input  = module.tables.debug.input
     table_output = module.tables.debug.output
+
+    stage_input  = module.stages.debug.input
+    stage_output = module.stages.debug.output
   }
 }
