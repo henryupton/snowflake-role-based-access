@@ -1,16 +1,4 @@
 # Module to simply parse the FQN and return the output to the next level of the equation.
-terraform {
-  required_providers {
-    snowflake = {
-      source                = "Snowflake-Labs/snowflake"
-      version               = "0.66.1"
-      configuration_aliases = [
-        snowflake,
-      ]
-    }
-  }
-}
-
 locals {
   resolved_wildcards = flatten([
     for k, v in var.payload : [

@@ -1,16 +1,4 @@
 # Module to find any FQN which ends in a wildcard and put it aside.
-terraform {
-  required_providers {
-    snowflake = {
-      source                = "Snowflake-Labs/snowflake"
-      version               = "0.66.1"
-      configuration_aliases = [
-        snowflake,
-      ]
-    }
-  }
-}
-
 locals {
   # Only grant futures on entire schemas.
   futures = {
