@@ -30,7 +30,7 @@ module "tables" {
   }
 }
 
-output "debug" {
+output "privileges" {
   value = {
     tables = module.tables.return
   }
