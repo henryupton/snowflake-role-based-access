@@ -27,8 +27,9 @@ locals {
   include = [
     for role_pattern in coalesce(var.include, []) : lower(role_pattern)
   ]
+  # Always exclude this role itself.
   exclude = [
-    for role_pattern in coalesce(var.exclude, []) : lower(role_pattern)
+    for role_pattern in setunion(coalesce(var.exclude, []), toset([lower(var.role_name)])) : lower(role_pattern)
   ]
 }
 
