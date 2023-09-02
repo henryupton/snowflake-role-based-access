@@ -63,7 +63,7 @@ resource "snowflake_{{ object }}_grant" "grant" {
   schema_name   = each.value.schema
   {{ object }}_name    = each.value.name
 
-  privilege = each.value.grant
+  privilege = upper(each.value.grant)
   roles     = [upper(var.role_name)]
 
   with_grant_option      = each.value.with_grant_option
@@ -78,7 +78,7 @@ resource "snowflake_{{ object }}_grant" "futures" {
   database_name = each.value.database
   schema_name   = each.value.schema
 
-  privilege = each.value.grant
+  privilege = upper(each.value.grant)
   roles     = [upper(var.role_name)]
 
   on_future              = true

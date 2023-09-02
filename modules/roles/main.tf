@@ -45,6 +45,7 @@ module "member_of" {
 
   include = lookup(coalesce(each.value.member_of, {}), "include", [])
   exclude = lookup(coalesce(each.value.member_of, {}), "exclude", [])
+  candidates = toset([for k, v in var.roles : k])
 
   depends_on = [module.roles]
 

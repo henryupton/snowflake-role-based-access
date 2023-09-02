@@ -88,3 +88,7 @@ users:
     default_namespace: string
     default_role: string
 ```
+
+## Limitations.
+Case sensitive object names are not supported. All identifiers are converted
+to upper case in align with [Snowflake's recommendations](https://docs.snowflake.com/en/sql-reference/identifiers-syntax). 

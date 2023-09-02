@@ -11,3 +11,7 @@ variable "exclude" {
   type    = set(string)
   default = []
 }
+
+variable "candidates" {
+  type = set(string)
+}
