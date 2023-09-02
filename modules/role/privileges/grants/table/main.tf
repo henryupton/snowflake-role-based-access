@@ -12,7 +12,7 @@ terraform {
 }
 
 module "parse_schema_wildcards" {
-  source = "../../parser/schema/resolve"
+  source = "../../../parser/schema/resolve"
 
   payload = var.tables
 
@@ -23,13 +23,13 @@ module "parse_schema_wildcards" {
 
 
 module "parse_input" {
-  source = "../../parser/object/input"
+  source = "../../../parser/object/input"
 
   payload = module.parse_schema_wildcards.return
 }
 
 module "parse_futures" {
-  source = "../../parser/object/futures"
+  source = "../../../parser/object/futures"
 
   payload = module.parse_input.return
 }
@@ -44,14 +44,14 @@ data "snowflake_tables" "tables" {
 module "resolve_wildcards" {
   for_each = module.parse_input.return
 
-  source = "../../parser/object/resolve"
+  source = "../../../parser/object/resolve"
 
   payload    = module.parse_input.return
   candidates = data.snowflake_tables.tables[each.key].tables
 }
 
 module "parse_output" {
-  source = "../../parser/object/output"
+  source = "../../../parser/object/output"
 
   payload = module.resolve_wildcards
 }
@@ -88,9 +88,12 @@ resource "snowflake_table_grant" "futures" {
   provider = snowflake.securityadmin
 }
 
-output "debug" {
-  value = {
-    input        = var.tables
-    output      = module.parse_output.return
-  }
+module "summary" {
+  source = "../../../parser/object/summary"
+
+  payload = module.parse_output.return
+}
+
+output "return" {
+  value = module.summary.return
 }

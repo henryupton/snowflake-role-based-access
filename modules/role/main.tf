@@ -19,7 +19,7 @@ resource "snowflake_role" "roles" {
 }
 
 module "tables" {
-  source = "./grants/table"
+  source = "./privileges/grants/table"
 
   role_name = snowflake_role.roles.name
   tables    = var.tables
@@ -30,24 +30,8 @@ module "tables" {
   }
 }
 
-module "stages" {
-  source = "./grants/stage"
-
-  role_name = snowflake_role.roles.name
-  stages    = var.stages
-
-  providers = {
-    snowflake               = snowflake
-    snowflake.securityadmin = snowflake.securityadmin
-  }
-}
-
 output "debug" {
   value = {
-    table_input  = module.tables.debug.input
-    table_output = module.tables.debug.output
-
-    stage_input  = module.stages.debug.input
-    stage_output = module.stages.debug.output
+    tables = module.tables.return
   }
 }
