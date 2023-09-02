@@ -46,12 +46,12 @@ resource "snowflake_user" "users" {
 # It is nicer to map roles to users rather than users to roles so we flip the script here.
 locals {
   users_to_roles = {
-    for user, user_data in var.users : upper(user) => user_data.member_of
+    for user, user_data in var.users : upper(user) => coalesce(user_data.member_of, [])
   }
   roles_to_users = transpose(local.users_to_roles)
 }
 
-resource "snowflake_role_grants" "grant_to_roles" {
+resource "snowflake_role_grants" "grant_role_to_user" {
   enable_multiple_grants = true
 
   for_each = local.roles_to_users
@@ -64,6 +64,6 @@ resource "snowflake_role_grants" "grant_to_roles" {
   depends_on = [snowflake_user.users]
 }
 
-output debug {
+output "debug" {
   value = var.users
 }
