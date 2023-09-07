@@ -14,7 +14,7 @@ terraform {
 module "parse_schema_wildcards" {
   source = "../../../parser/schema/resolve"
 
-  payload = var.views
+  payload = var.file_formats
 
   providers = {
     snowflake = snowflake
@@ -33,7 +33,7 @@ module "parse_futures" {
   payload = module.parse_input.return
 }
 
-data "snowflake_views" "views" {
+data "snowflake_file_formats" "file_formats" {
   for_each = module.parse_input.return
 
   database = upper(each.value.database)
@@ -46,7 +46,7 @@ module "resolve_wildcards" {
   source = "../../../parser/object/resolve"
 
   payload    = module.parse_input.return
-  candidates = data.snowflake_views.views[each.key].views
+  candidates = data.snowflake_file_formats.file_formats[each.key].file_formats
 }
 
 module "parse_output" {
@@ -55,12 +55,12 @@ module "parse_output" {
   payload = module.resolve_wildcards
 }
 
-resource "snowflake_view_grant" "grant" {
+resource "snowflake_file_format_grant" "grant" {
   for_each = module.parse_output.return
 
   database_name = each.value.database
   schema_name   = each.value.schema
-  view_name    = each.value.name
+  file_format_name    = each.value.name
 
   privilege = upper(each.value.grant)
   roles     = [upper(var.role_name)]
@@ -71,7 +71,7 @@ resource "snowflake_view_grant" "grant" {
   provider = snowflake.securityadmin
 }
 
-resource "snowflake_view_grant" "futures" {
+resource "snowflake_file_format_grant" "futures" {
   for_each = module.parse_futures.return
 
   database_name = each.value.database

@@ -1,4 +1,4 @@
-variable "pipes" {
+variable "materialized_views" {
   type = map(object({
     grants            = list(string)
     with_grant_option = optional(bool)

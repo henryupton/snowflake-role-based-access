@@ -21,7 +21,6 @@ module "parse_schema_wildcards" {
   }
 }
 
-
 module "parse_input" {
   source = "../../../parser/object/input"
 
