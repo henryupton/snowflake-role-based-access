@@ -4,7 +4,7 @@ module "roles" {
   # Read all yaml files in this dir.
   roles = merge(
     [
-      for f in fileset(path.module, "*.yml") : lookup(
+      for f in fileset(path.module, "*.{yml,yaml}") : lookup(
       yamldecode(
         file(f)
       ),
