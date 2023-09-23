@@ -42,7 +42,7 @@ module "users" {
   }
 }
 
-output "debug" {
+output "state" {
   value = {
     roles = module.roles.debug
     users = module.users.debug
