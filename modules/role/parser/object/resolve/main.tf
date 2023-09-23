@@ -1,7 +1,32 @@
+# Fully qualified names (no wildcards) bypass the matching.
+# This avoids matching 'abcd' when the fqn 'abc' is provided.
+locals {
+  fqn = {for k, v in var.payload : k => v if length(split("*", k)) == 1}
+
+  payload = {for k, v in var.payload : k => v if length(split("*", k)) > 1}
+}
+
 # Module to simply parse the FQN and return the output to the next level of the equation.
 locals {
+  resolved_fqns = flatten([
+    for k, v in local.fqn : [
+      for g in v.grants : {
+        database = upper(v.database)
+        schema   = upper(v.schema)
+        name     = upper(v.name)
+
+        fqn = upper("${v.database}.${v.schema}.${v.name}")
+
+        pattern_matched = k
+
+        grant             = g
+        with_grant_option = v.with_grant_option
+      }
+    ]
+  ])
+
   resolved_wildcards = flatten([
-    for k, v in var.payload : [
+    for k, v in local.payload : [
       for t in var.candidates : [
         for g in v.grants : {
           database = upper(t.database)
@@ -24,9 +49,14 @@ locals {
     ]
   ])
 
-  objects_by_grant = {
-    for i in local.resolved_wildcards : lower("${i.database}.${i.schema}.${i.name}|${i.grant}") => i
-  }
+  objects_by_grant = merge(
+    {
+      for i in local.resolved_wildcards : lower("${i.database}.${i.schema}.${i.name}|${i.grant}") => i
+    },
+    {
+      for i in local.resolved_fqns : lower("${i.database}.${i.schema}.${i.name}|${i.grant}") => i
+    },
+  )
 }
 
 output "return" {

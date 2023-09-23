@@ -22,6 +22,9 @@ locals {
       with_grant_option = coalesce(v.with_grant_option, false)
     }
   }
+
+  input_wildcard = {for k, v in local.input : k => v if length(split("*", v.schema)) > 1}
+  input_fqn      = {for k, v in local.input : k => v if length(split("*", v.schema)) == 1}
 }
 
 data "snowflake_schemas" "schema_wildcard" {
@@ -32,7 +35,7 @@ data "snowflake_schemas" "schema_wildcard" {
 
 locals {
   _resolved_wildcards = flatten([
-    for k, v in local.input : [
+    for k, v in local.input_wildcard : [
       for s in coalesce(data.snowflake_schemas.schema_wildcard[k].schemas, []) : {
         database = upper(s.database)
         schema   = upper(s.name)
@@ -50,12 +53,24 @@ locals {
 
   resolved_wildcards = {
     for i in local._resolved_wildcards : lower("${i.database}.${i.schema}.${i.name}") => {
-      grants = i.grants
+      grants            = i.grants
       with_grant_option = i.with_grant_option
     }
   }
+
+  resolved_fqns = {
+    for i in local.input_fqn : lower("${i.database}.${i.schema}.${i.name}") => {
+      grants            = i.grants
+      with_grant_option = i.with_grant_option
+    }
+  }
+
+  all_resolved = merge(
+    local.resolved_wildcards,
+    local.resolved_fqns,
+  )
 }
 
 output "return" {
-  value = local.resolved_wildcards
+  value = local.all_resolved
 }
