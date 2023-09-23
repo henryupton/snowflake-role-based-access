@@ -14,7 +14,7 @@ terraform {
 module "parse_schema_wildcards" {
   source = "../../../parser/schema/resolve"
 
-  payload = var.masking_policys
+  payload = var.masking_policies
 
   providers = {
     snowflake = snowflake
@@ -27,13 +27,7 @@ module "parse_input" {
   payload = module.parse_schema_wildcards.return
 }
 
-module "parse_futures" {
-  source = "../../../parser/object/futures"
-
-  payload = module.parse_input.return
-}
-
-data "snowflake_masking_policys" "masking_policys" {
+data "snowflake_masking_policies" "masking_policies" {
   for_each = module.parse_input.return
 
   database = upper(each.value.database)
@@ -46,7 +40,7 @@ module "resolve_wildcards" {
   source = "../../../parser/object/resolve"
 
   payload    = module.parse_input.return
-  candidates = data.snowflake_masking_policys.masking_policys[each.key].masking_policys
+  candidates = data.snowflake_masking_policies.masking_policies[each.key].masking_policies
 }
 
 module "parse_output" {
@@ -65,22 +59,6 @@ resource "snowflake_masking_policy_grant" "grant" {
   privilege = upper(each.value.grant)
   roles     = [upper(var.role_name)]
 
-  with_grant_option      = each.value.with_grant_option
-  enable_multiple_grants = true
-
-  provider = snowflake.securityadmin
-}
-
-resource "snowflake_masking_policy_grant" "futures" {
-  for_each = module.parse_futures.return
-
-  database_name = each.value.database
-  schema_name   = each.value.schema
-
-  privilege = upper(each.value.grant)
-  roles     = [upper(var.role_name)]
-
-  on_future              = true
   with_grant_option      = each.value.with_grant_option
   enable_multiple_grants = true
 
