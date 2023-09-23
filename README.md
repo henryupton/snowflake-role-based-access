@@ -34,14 +34,12 @@ roles:
     comment: string
 
     privileges:
-      # All resources support the following wildcard formats.
+      # All schema resources support the following wildcard formats.
       # - database_name.*.*
       # - database_name.schema_name.*
       # - database_name.schema_partial_*.*
-      # - database_name.schema_name.table_partial_*
-      warehouses:
-        - string
-
+      # - database_name.schema_name.object_partial_*
+      # - database_name.schema_name.object_name
       pipes:
         - string
 
@@ -58,6 +56,13 @@ roles:
         - string
 
       views:
+        - string
+
+      # All account resources support the following wildcard formats.
+      # - *
+      # - object_partial_*
+      # - object_name
+      warehouses:
         - string
 
       storage_integrations:
