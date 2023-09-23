@@ -8,11 +8,23 @@ variable "roles" {
     }))
 
     privileges = optional(object({
-      tables = optional(map(object({
+      external_tables = optional(map(object({
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
-      stages = optional(map(object({
+      file_formats = optional(map(object({
+        grants            = list(string)
+        with_grant_option = optional(bool)
+      })))
+      functions = optional(map(object({
+        grants            = list(string)
+        with_grant_option = optional(bool)
+      })))
+      masking_policys = optional(map(object({
+        grants            = list(string)
+        with_grant_option = optional(bool)
+      })))
+      materialized_views = optional(map(object({
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
@@ -20,11 +32,19 @@ variable "roles" {
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
-      views = optional(map(object({
+      procedures = optional(map(object({
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
-      tasks = optional(map(object({
+      sequences = optional(map(object({
+        grants            = list(string)
+        with_grant_option = optional(bool)
+      })))
+      stages = optional(map(object({
+        grants            = list(string)
+        with_grant_option = optional(bool)
+      })))
+      storage_integrations = optional(map(object({
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
@@ -32,15 +52,19 @@ variable "roles" {
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
-      external_tables = optional(map(object({
+      tables = optional(map(object({
+        grants            = list(string)
+        with_grant_option = optional(bool)
+      })))
+      tasks = optional(map(object({
+        grants            = list(string)
+        with_grant_option = optional(bool)
+      })))
+      views = optional(map(object({
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
       warehouses = optional(map(object({
-        grants            = list(string)
-        with_grant_option = optional(bool)
-      })))
-      storage_integrations = optional(map(object({
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
