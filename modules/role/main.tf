@@ -18,8 +18,23 @@ resource "snowflake_role" "roles" {
   provider = snowflake.securityadmin
 }
 
+module "schemas" {
+  source = "./privileges/schema"
+
+  role_name = snowflake_role.roles.name
+  payload = merge(
+    var.tables,
+    var.stages,
+  )
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
 module "external_tables" {
-  source = "./privileges/grants/external_table"
+  source = "./privileges/object/external_table"
 
   role_name       = snowflake_role.roles.name
   external_tables = var.external_tables
@@ -31,7 +46,7 @@ module "external_tables" {
 }
 
 module "file_formats" {
-  source = "./privileges/grants/file_format"
+  source = "./privileges/object/file_format"
 
   role_name    = snowflake_role.roles.name
   file_formats = var.file_formats
@@ -43,7 +58,7 @@ module "file_formats" {
 }
 
 module "functions" {
-  source = "./privileges/grants/function"
+  source = "./privileges/object/function"
 
   role_name = snowflake_role.roles.name
   functions = var.functions
@@ -55,7 +70,7 @@ module "functions" {
 }
 
 module "masking_policies" {
-  source = "./privileges/grants/masking_policy"
+  source = "./privileges/object/masking_policy"
 
   role_name        = snowflake_role.roles.name
   masking_policies = var.masking_policies
@@ -67,7 +82,7 @@ module "masking_policies" {
 }
 
 module "materialized_views" {
-  source = "./privileges/grants/materialized_view"
+  source = "./privileges/object/materialized_view"
 
   role_name          = snowflake_role.roles.name
   materialized_views = var.materialized_views
@@ -79,7 +94,7 @@ module "materialized_views" {
 }
 
 module "pipes" {
-  source = "./privileges/grants/pipe"
+  source = "./privileges/object/pipe"
 
   role_name = snowflake_role.roles.name
   pipes     = var.pipes
@@ -91,7 +106,7 @@ module "pipes" {
 }
 
 module "procedures" {
-  source = "./privileges/grants/procedure"
+  source = "./privileges/object/procedure"
 
   role_name  = snowflake_role.roles.name
   procedures = var.procedures
@@ -103,7 +118,7 @@ module "procedures" {
 }
 
 module "sequences" {
-  source = "./privileges/grants/sequence"
+  source = "./privileges/object/sequence"
 
   role_name = snowflake_role.roles.name
   sequences = var.sequences
@@ -115,7 +130,7 @@ module "sequences" {
 }
 
 module "stages" {
-  source = "./privileges/grants/stage"
+  source = "./privileges/object/stage"
 
   role_name = snowflake_role.roles.name
   stages    = var.stages
@@ -127,7 +142,7 @@ module "stages" {
 }
 
 module "storage_integrations" {
-  source = "./privileges/grants/storage_integration"
+  source = "./privileges/object/storage_integration"
 
   role_name            = snowflake_role.roles.name
   storage_integrations = var.storage_integrations
@@ -139,7 +154,7 @@ module "storage_integrations" {
 }
 
 module "streams" {
-  source = "./privileges/grants/stream"
+  source = "./privileges/object/stream"
 
   role_name = snowflake_role.roles.name
   streams   = var.streams
@@ -151,7 +166,7 @@ module "streams" {
 }
 
 module "tables" {
-  source = "./privileges/grants/table"
+  source = "./privileges/object/table"
 
   role_name = snowflake_role.roles.name
   tables    = var.tables
@@ -163,7 +178,7 @@ module "tables" {
 }
 
 module "tasks" {
-  source = "./privileges/grants/task"
+  source = "./privileges/object/task"
 
   role_name = snowflake_role.roles.name
   tasks     = var.tasks
@@ -175,7 +190,7 @@ module "tasks" {
 }
 
 module "views" {
-  source = "./privileges/grants/view"
+  source = "./privileges/object/view"
 
   role_name = snowflake_role.roles.name
   views     = var.views
@@ -187,7 +202,7 @@ module "views" {
 }
 
 module "warehouses" {
-  source = "./privileges/grants/warehouse"
+  source = "./privileges/object/warehouse"
 
   role_name  = snowflake_role.roles.name
   warehouses = var.warehouses
