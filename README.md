@@ -40,37 +40,47 @@ roles:
       # - database_name.schema_partial_*.*
       # - database_name.schema_name.object_partial_*
       # - database_name.schema_name.object_name
-      pipes:
-        - string
-
-      stages:
-        - string
-
       external_tables:
-        - string
+        string:
+          grants:
+            - string
 
-      tasks:
-        - string
-
+      file_formats:
+        ...
+      functions:
+        ...
+      masking_policies:
+        ...
+      materialized_views:
+        ...
+      pipes:
+        ...
+      procedures:
+        ...
+      sequences:
+        ...
+      stages:
+        ...
       streams:
-        - string
-
+        ...
+      tables:
+        ...
+      tasks:
+        ...
       views:
-        - string
-
-      # All account resources support the following wildcard formats.
-      # - *
-      # - object_partial_*
+        ...
+      # All account resources support only fully qualified references.
       # - object_name
-      warehouses:
-        - string
-
       storage_integrations:
-        - string
+        string:
+          grants:
+            - string
 
+      warehouses:
+        ...
+      
     # Roles have a slightly different format.
     # Exclusions are applied after inclusions and so take priority.
-    # The use of wildcards is accepted anywhere in the role name.
     member_of:
       include:
         - string
@@ -85,7 +95,6 @@ users:
     member_of:
       - string
     first_name: string
-    middle_name: string
     last_name: string
     email: string
     comment: string
@@ -95,5 +104,5 @@ users:
 ```
 
 ## Limitations.
-Case sensitive object names are not supported. All identifiers are converted
+Case-sensitive object names are not supported. All identifiers are converted
 to upper case in align with [Snowflake's recommendations](https://docs.snowflake.com/en/sql-reference/identifiers-syntax). 
