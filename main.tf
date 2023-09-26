@@ -25,7 +25,7 @@ module "users" {
 
   users = merge(
     [
-      for f in fileset(path.module, "*.yml") : lookup(
+      for f in fileset(path.module, "*.{yml,yaml}") : lookup(
       yamldecode(
         file(f)
       ),
