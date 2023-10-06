@@ -10,18 +10,23 @@ locals {
 locals {
   resolved_fqns = flatten([
     for k, v in local.fqn : [
-      for g in v.grants : {
-        database = upper(v.database)
-        schema   = upper(v.schema)
-        name     = upper(v.name)
+      for t in var.candidates : [
+        for g in v.grants : {
+          database = upper(v.database)
+          schema   = upper(v.schema)
+          name     = upper(v.name)
 
-        fqn = upper("${v.database}.${v.schema}.${v.name}")
+          fqn = upper("${v.database}.${v.schema}.${v.name}")
 
-        pattern_matched = k
+          pattern_matched = k
 
-        grant             = g
-        with_grant_option = v.with_grant_option
-      }
+          grant             = g
+          with_grant_option = v.with_grant_option
+        }
+        if lower(t.database) == lower(v.database)
+        && lower(t.schema) == lower(v.schema)
+        && lower(t.name) == lower(v.name)
+      ]
     ]
   ])
 
@@ -51,10 +56,10 @@ locals {
 
   objects_by_grant = merge(
     {
-      for i in local.resolved_wildcards : lower("${i.database}.${i.schema}.${i.name}|${i.grant}") => i
+      for i in local.resolved_wildcards : lower("${i.fqn}|${i.grant}") => i
     },
     {
-      for i in local.resolved_fqns : lower("${i.database}.${i.schema}.${i.name}|${i.grant}") => i
+      for i in local.resolved_fqns : lower("${i.fqn}|${i.grant}") => i
     },
   )
 }
