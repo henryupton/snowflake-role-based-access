@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pathlib
 
 import click
@@ -13,9 +15,9 @@ def main(
     objects = [f for f in dir_.iterdir() if f.is_dir()]
 
     for object_ in objects:
-        with open("./templates/object/main.tf") as m:
+        with open("./templates/schema_object/main.tf") as m:
             template_main = jinja2.Environment().from_string(m.read())
-        with open("./templates/object/variables.tf") as v:
+        with open("./templates/schema_object/variables.tf") as v:
             template_variables = jinja2.Environment().from_string(v.read())
 
         with (object_ / "main.tf").open(mode="w+") as m:

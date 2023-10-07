@@ -55,36 +55,36 @@ module "parse_output" {
   payload = module.resolve_wildcards
 }
 
-resource "snowflake_external_table_grant" "grant" {
+resource "snowflake_grant_privileges_to_role" "grant" {
   for_each = module.parse_output.return
 
-  database_name = each.value.database
-  schema_name   = each.value.schema
-  external_table_name    = each.value.name
+  role_name = upper(var.role_name)
 
-  privilege = upper(each.value.grant)
-  roles     = [upper(var.role_name)]
+  privileges = each.value.grants
 
-  with_grant_option      = each.value.with_grant_option
-  enable_multiple_grants = true
+  on_schema_object {
+    object_type = upper("external_table")
+    object_name = "${each.value.database}.${each.value.schema}.${each.value.name}"
+  }
 
-  provider = snowflake.securityadmin
+  with_grant_option = each.value.with_grant_option
 }
 
-resource "snowflake_external_table_grant" "futures" {
+resource "snowflake_grant_privileges_to_role" "future" {
   for_each = module.parse_futures.return
 
-  database_name = each.value.database
-  schema_name   = each.value.schema
+  role_name = var.role_name
 
-  privilege = upper(each.value.grant)
-  roles     = [upper(var.role_name)]
+  privileges = each.value.grants
 
-  on_future              = true
-  with_grant_option      = each.value.with_grant_option
-  enable_multiple_grants = true
+  on_schema_object {
+    future {
+      object_type_plural = upper("external_tables")
+      in_schema          = "${each.value.database}.${each.value.schema}"
+    }
+  }
 
-  provider = snowflake.securityadmin
+  with_grant_option = each.value.with_grant_option
 }
 
 module "summary" {

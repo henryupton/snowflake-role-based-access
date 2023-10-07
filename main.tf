@@ -49,8 +49,8 @@ output "state" {
     roles   = module.roles.debug
     users   = module.users.debug
     account = {
-      name   = data.snowflake_current_account.this.account
-      url    = data.snowflake_current_account.this.url
+      name   = lower(replace(data.snowflake_current_account.this.account, "_", "-"))
+      url    = lower(data.snowflake_current_account.this.url)
       region = data.snowflake_current_account.this.region
     }
   }

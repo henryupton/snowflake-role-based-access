@@ -36,14 +36,15 @@ resource "snowflake_database_grant" "usage" {
   with_grant_option = false
 }
 
-resource "snowflake_schema_grant" "usage" {
+resource "snowflake_grant_privileges_to_role" "usage" {
   for_each = local.schemas
 
-  database_name = upper(split(".", each.value)[0])
-  schema_name   = upper(split(".", each.value)[1])
+  privileges = ["USAGE"]
+  role_name  = var.role_name
 
-  privilege = "USAGE"
-  roles     = [var.role_name]
+  on_schema {
+    schema_name = upper("${split(".", each.value)[0]}.${split(".", each.value)[1]}")
+  }
 
   with_grant_option = false
 }

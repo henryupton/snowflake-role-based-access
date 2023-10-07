@@ -10,56 +10,52 @@ locals {
 locals {
   resolved_fqns = flatten([
     for k, v in local.fqn : [
-      for t in var.candidates : [
-        for g in v.grants : {
-          database = upper(v.database)
-          schema   = upper(v.schema)
-          name     = upper(v.name)
+      for t in var.candidates : {
+        database = upper(v.database)
+        schema   = upper(v.schema)
+        name     = upper(v.name)
 
-          fqn = upper("${v.database}.${v.schema}.${v.name}")
+        fqn = upper("${v.database}.${v.schema}.${v.name}")
 
-          pattern_matched = k
+        pattern_matched = k
 
-          grant             = g
-          with_grant_option = v.with_grant_option
-        }
-        if lower(t.database) == lower(v.database)
-        && lower(t.schema) == lower(v.schema)
-        && lower(t.name) == lower(v.name)
-      ]
+        grants            = v.grants
+        with_grant_option = v.with_grant_option
+      }
+      if lower(t.database) == lower(v.database)
+      && lower(t.schema) == lower(v.schema)
+      && lower(t.name) == lower(v.name)
     ]
   ])
 
   resolved_wildcards = flatten([
     for k, v in local.payload : [
-      for t in var.candidates : [
-        for g in v.grants : {
-          database = upper(t.database)
-          schema   = upper(t.schema)
-          name     = upper(t.name)
+      for t in var.candidates : {
+        database = upper(t.database)
+        schema   = upper(t.schema)
+        name     = upper(t.name)
 
-          fqn = upper("${t.database}.${t.schema}.${t.name}")
+        fqn = upper("${t.database}.${t.schema}.${t.name}")
 
-          pattern_matched = k
+        pattern_matched = k
 
-          grant             = g
-          with_grant_option = v.with_grant_option
-        }
-        if startswith(
-          lower(t.name),
-          lower(split("*", v.name)[0])  # Match tables which share the prefix before the wildcard.
-        )
-        && lower(t.schema) == lower(v.schema)  # Don't want to match across schemas.
-      ]
+        grants            = v.grants
+        with_grant_option = v.with_grant_option
+      }
+      if startswith(
+        lower(t.name),
+        lower(split("*", v.name)[0])  # Match tables which share the prefix before the wildcard.
+      )
+      && lower(t.schema) == lower(v.schema)  # Don't want to match across schemas.
     ]
   ])
 
   objects_by_grant = merge(
     {
-      for i in local.resolved_wildcards : lower("${i.fqn}|${i.grant}") => i
+      for i in local.resolved_wildcards : lower("${i.fqn}|${join("|", i.grants)}") => i
     },
     {
-      for i in local.resolved_fqns : lower("${i.fqn}|${i.grant}") => i
+      for i in local.resolved_fqns : lower("${i.fqn}|${join("|", i.grants)}") => i
     },
   )
 }

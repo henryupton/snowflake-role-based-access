@@ -15,7 +15,7 @@ locals {
           schema   = v.schema
           name     = v.name
 
-          grant             = v.grant
+          grants            = v.grants
           with_grant_option = v.with_grant_option
         }
       ]
@@ -29,7 +29,7 @@ locals {
       schema   = obj.schema
       name     = obj.name
 
-      grant             = obj.grant
+      grants            = [for grant in obj.grants : upper(grant)]
       with_grant_option = obj.with_grant_option
     }
   }

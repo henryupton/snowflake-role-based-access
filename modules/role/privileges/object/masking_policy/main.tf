@@ -27,6 +27,12 @@ module "parse_input" {
   payload = module.parse_schema_wildcards.return
 }
 
+module "parse_futures" {
+  source = "../../../parser/object/futures"
+
+  payload = module.parse_input.return
+}
+
 data "snowflake_masking_policies" "masking_policies" {
   for_each = module.parse_input.return
 
@@ -49,20 +55,36 @@ module "parse_output" {
   payload = module.resolve_wildcards
 }
 
-resource "snowflake_masking_policy_grant" "grant" {
+resource "snowflake_grant_privileges_to_role" "grant" {
   for_each = module.parse_output.return
 
-  database_name = each.value.database
-  schema_name   = each.value.schema
-  masking_policy_name    = each.value.name
+  role_name = upper(var.role_name)
 
-  privilege = upper(each.value.grant)
-  roles     = [upper(var.role_name)]
+  privileges = each.value.grants
 
-  with_grant_option      = each.value.with_grant_option
-  enable_multiple_grants = true
+  on_schema_object {
+    object_type = upper("masking_policy")
+    object_name = "${each.value.database}.${each.value.schema}.${each.value.name}"
+  }
 
-  provider = snowflake.securityadmin
+  with_grant_option = each.value.with_grant_option
+}
+
+resource "snowflake_grant_privileges_to_role" "future" {
+  for_each = module.parse_futures.return
+
+  role_name = var.role_name
+
+  privileges = each.value.grants
+
+  on_schema_object {
+    future {
+      object_type_plural = upper("masking_policies")
+      in_schema          = "${each.value.database}.${each.value.schema}"
+    }
+  }
+
+  with_grant_option = each.value.with_grant_option
 }
 
 module "summary" {

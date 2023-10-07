@@ -8,7 +8,7 @@ variable "payload" {
       fqn             = string
       pattern_matched = string
 
-      grant            = string
+      grants            = list(string)
       with_grant_option = optional(bool)
     }))
   }))

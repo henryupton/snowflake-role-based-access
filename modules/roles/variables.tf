@@ -20,7 +20,7 @@ variable "roles" {
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
-      masking_policys = optional(map(object({
+      masking_policies = optional(map(object({
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
