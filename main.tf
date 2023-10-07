@@ -42,9 +42,16 @@ module "users" {
   }
 }
 
+data "snowflake_current_account" "this" {}
+
 output "state" {
   value = {
-    roles = module.roles.debug
-    users = module.users.debug
+    roles   = module.roles.debug
+    users   = module.users.debug
+    account = {
+      name   = data.snowflake_current_account.this.account
+      url    = data.snowflake_current_account.this.url
+      region = data.snowflake_current_account.this.region
+    }
   }
 }
