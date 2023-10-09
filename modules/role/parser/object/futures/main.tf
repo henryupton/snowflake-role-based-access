@@ -11,20 +11,8 @@ locals {
     } if v.name == "*"
   }
 
-  _futures_by_grant = flatten([
-    for k, v in local.futures : [
-      for g in v.grants : {
-        database = v.database
-        schema   = v.schema
-
-        grant             = g
-        with_grant_option = v.with_grant_option
-      }
-    ]
-  ])
-
   futures_by_grant = {
-    for i in local._futures_by_grant : lower("${i.database}.${i.schema}|${i.grant}") => i
+    for i in local.futures : lower("${i.database}.${i.schema}|${join("|", i.grants)}") => i
   }
 }
 
