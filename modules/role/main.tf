@@ -142,7 +142,7 @@ module "stages" {
 }
 
 module "storage_integrations" {
-  source = "./privileges/object/storage_integration"
+  source = "./privileges/account/storage_integration"
 
   role_name            = snowflake_role.roles.name
   storage_integrations = var.storage_integrations
@@ -202,7 +202,7 @@ module "views" {
 }
 
 module "warehouses" {
-  source = "./privileges/object/warehouse"
+  source = "./privileges/account/warehouse"
 
   role_name  = snowflake_role.roles.name
   warehouses = var.warehouses
