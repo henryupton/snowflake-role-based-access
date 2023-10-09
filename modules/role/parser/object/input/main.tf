@@ -6,7 +6,7 @@ locals {
       schema   = split(".", k)[1]
       name     = split(".", k)[2]
 
-      grants            = v.grants
+      grants            = [for grant in v.grants : upper(grant)]
       with_grant_option = coalesce(v.with_grant_option, false)
     }
   }

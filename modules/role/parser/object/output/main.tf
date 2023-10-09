@@ -29,7 +29,7 @@ locals {
       schema   = obj.schema
       name     = obj.name
 
-      grants            = [for grant in obj.grants : upper(grant)]
+      grants            = obj.grants
       with_grant_option = obj.with_grant_option
     }
   }
