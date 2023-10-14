@@ -30,16 +30,18 @@ locals {
   )
 }
 
-resource "snowflake_warehouse_grant" "grant" {
+resource "snowflake_grant_privileges_to_role" "grant" {
   for_each = local.objects_by_grant
 
-  warehouse_name = upper(each.value.name)
+  privileges = each.value.grants
+  role_name  = var.role_name
 
-  privilege = upper(each.value.grant)
-  roles     = [upper(var.role_name)]
+  on_account_object {
+    object_type = "WAREHOUSE"
+    object_name = upper(each.value.name)
+  }
 
-  with_grant_option      = each.value.with_grant_option
-  enable_multiple_grants = true
+  with_grant_option = each.value.with_grant_option
 
   provider = snowflake.securityadmin
 }
