@@ -13,7 +13,7 @@ terraform {
 
 locals {
   _objects_by_grant = flatten([
-    for k, v in var.warehouses : [
+    for k, v in coalesce(var.warehouses, {}) : [
       for g in v.grants : {
         name = k
 
@@ -45,5 +45,5 @@ resource "snowflake_warehouse_grant" "grant" {
 }
 
 output "return" {
-  value = [ for k, v in var.warehouses : k ]
+  value = [ for k, v in coalesce(var.warehouses, {}) : k ]
 }

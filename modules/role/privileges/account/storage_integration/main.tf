@@ -11,33 +11,29 @@ terraform {
   }
 }
 
-module "parse_input" {
-  source = "../../../parser/object/input"
+locals {
+  _objects_by_grant = flatten([
+    for k, v in coalesce(var.storage_integrations, {}) : [
+      for g in v.grants : {
+        name = k
 
-  payload = var.storage_integrations
-}
+        grant             = g
+        with_grant_option = v.with_grant_option
+      }
+    ]
+  ])
 
-data "snowflake_storage_integrations" "storage_integrations" {}
-
-module "resolve_wildcards" {
-  for_each = module.parse_input.return
-
-  source = "../../../parser/object/resolve"
-
-  payload    = module.parse_input.return
-  candidates = data.snowflake_storage_integrations.storage_integrations.storage_integrations
-}
-
-module "parse_output" {
-  source = "../../../parser/object/output"
-
-  payload = module.resolve_wildcards
+  objects_by_grant = merge(
+    {
+      for i in local._objects_by_grant : lower("${i.name}|${i.grant}") => i
+    }
+  )
 }
 
 resource "snowflake_integration_grant" "grant" {
-  for_each = module.parse_output.return
+  for_each = local.objects_by_grant
 
-  integration_name    = each.value.name
+  integration_name = upper(each.value.name)
 
   privilege = upper(each.value.grant)
   roles     = [upper(var.role_name)]
@@ -48,12 +44,6 @@ resource "snowflake_integration_grant" "grant" {
   provider = snowflake.securityadmin
 }
 
-module "summary" {
-  source = "../../../parser/object/summary"
-
-  payload = module.parse_output.return
-}
-
 output "return" {
-  value = module.summary.return
+  value = [ for k, v in coalesce(var.storage_integrations, {}) : k ]
 }

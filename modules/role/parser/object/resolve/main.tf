@@ -10,7 +10,7 @@ locals {
 locals {
   resolved_fqns = flatten([
     for k, v in local.fqn : [
-      for t in var.candidates : {
+      for t in coalesce(var.candidates, []) : {
         database = upper(v.database)
         schema   = upper(v.schema)
         name     = upper(v.name)
@@ -30,7 +30,7 @@ locals {
 
   resolved_wildcards = flatten([
     for k, v in local.payload : [
-      for t in var.candidates : {
+      for t in coalesce(var.candidates, []) : {
         database = upper(t.database)
         schema   = upper(t.schema)
         name     = upper(t.name)
