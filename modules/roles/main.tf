@@ -29,7 +29,7 @@ module "roles" {
   procedures           = lookup(coalesce(each.value.privileges, {}), "procedures", {})
   sequences            = lookup(coalesce(each.value.privileges, {}), "sequences", {})
   stages               = lookup(coalesce(each.value.privileges, {}), "stages", {})
-  storage_integrations = lookup(coalesce(each.value.privileges, {}), "storage_integrations", {})
+  integrations = lookup(coalesce(each.value.privileges, {}), "integrations", {})
   streams              = lookup(coalesce(each.value.privileges, {}), "streams", {})
   tables               = lookup(coalesce(each.value.privileges, {}), "tables", {})
   tasks                = lookup(coalesce(each.value.privileges, {}), "tasks", {})

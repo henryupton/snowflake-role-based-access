@@ -63,7 +63,7 @@ resource "snowflake_grant_privileges_to_role" "grant" {
   privileges = each.value.grants
 
   on_schema_object {
-    object_type = upper("materialized_view")
+    object_type = upper("materialized view")
     object_name = "${each.value.database}.${each.value.schema}.${each.value.name}"
   }
 
@@ -79,7 +79,7 @@ resource "snowflake_grant_privileges_to_role" "future" {
 
   on_schema_object {
     future {
-      object_type_plural = upper("materialized_views")
+      object_type_plural = upper("materialized views")
       in_schema          = "${each.value.database}.${each.value.schema}"
     }
   }

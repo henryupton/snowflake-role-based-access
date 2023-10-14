@@ -63,7 +63,7 @@ resource "snowflake_grant_privileges_to_role" "grant" {
   privileges = each.value.grants
 
   on_schema_object {
-    object_type = upper("masking_policy")
+    object_type = upper("masking policy")
     object_name = "${each.value.database}.${each.value.schema}.${each.value.name}"
   }
 
@@ -79,7 +79,7 @@ resource "snowflake_grant_privileges_to_role" "future" {
 
   on_schema_object {
     future {
-      object_type_plural = upper("masking_policies")
+      object_type_plural = upper("masking policies")
       in_schema          = "${each.value.database}.${each.value.schema}"
     }
   }

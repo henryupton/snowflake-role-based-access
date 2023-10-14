@@ -14,7 +14,7 @@ terraform {
 module "parse_schema_wildcards" {
   source = "../../../parser/schema/resolve"
 
-  payload = var.{{ object }}s
+  payload = var.secrets
 
   providers = {
     snowflake = snowflake
@@ -33,7 +33,7 @@ module "parse_futures" {
   payload = module.parse_input.return
 }
 
-data "snowflake_{{ object }}s" "{{ object }}s" {
+data "snowflake_secrets" "secrets" {
   for_each = module.parse_input.return
 
   database = upper(each.value.database)
@@ -46,7 +46,7 @@ module "resolve_wildcards" {
   source = "../../../parser/object/resolve"
 
   payload    = module.parse_input.return
-  candidates = data.snowflake_{{ object }}s.{{ object }}s[each.key].{{ object }}s
+  candidates = data.snowflake_secrets.secrets[each.key].secrets
 }
 
 module "parse_output" {
@@ -63,7 +63,7 @@ resource "snowflake_grant_privileges_to_role" "grant" {
   privileges = each.value.grants
 
   on_schema_object {
-    object_type = upper("{{ object }}")
+    object_type = upper("secret")
     object_name = "${each.value.database}.${each.value.schema}.${each.value.name}"
   }
 
@@ -79,7 +79,7 @@ resource "snowflake_grant_privileges_to_role" "future" {
 
   on_schema_object {
     future {
-      object_type_plural = upper("{{ object }}s")
+      object_type_plural = upper("secrets")
       in_schema          = "${each.value.database}.${each.value.schema}"
     }
   }

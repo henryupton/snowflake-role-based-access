@@ -1,4 +1,4 @@
-variable "warehouses" {
+variable "secrets" {
   type = map(object({
     grants            = list(string)
     with_grant_option = optional(bool)

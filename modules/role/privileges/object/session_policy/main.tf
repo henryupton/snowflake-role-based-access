@@ -14,7 +14,7 @@ terraform {
 module "parse_schema_wildcards" {
   source = "../../../parser/schema/resolve"
 
-  payload = var.file_formats
+  payload = var.session_policies
 
   providers = {
     snowflake = snowflake
@@ -33,7 +33,7 @@ module "parse_futures" {
   payload = module.parse_input.return
 }
 
-data "snowflake_file_formats" "file_formats" {
+data "snowflake_session_policies" "session_policies" {
   for_each = module.parse_input.return
 
   database = upper(each.value.database)
@@ -46,7 +46,7 @@ module "resolve_wildcards" {
   source = "../../../parser/object/resolve"
 
   payload    = module.parse_input.return
-  candidates = data.snowflake_file_formats.file_formats[each.key].file_formats
+  candidates = data.snowflake_session_policies.session_policies[each.key].session_policies
 }
 
 module "parse_output" {
@@ -63,7 +63,7 @@ resource "snowflake_grant_privileges_to_role" "grant" {
   privileges = each.value.grants
 
   on_schema_object {
-    object_type = upper("file format")
+    object_type = upper("session policy")
     object_name = "${each.value.database}.${each.value.schema}.${each.value.name}"
   }
 
@@ -79,7 +79,7 @@ resource "snowflake_grant_privileges_to_role" "future" {
 
   on_schema_object {
     future {
-      object_type_plural = upper("file formats")
+      object_type_plural = upper("session policies")
       in_schema          = "${each.value.database}.${each.value.schema}"
     }
   }

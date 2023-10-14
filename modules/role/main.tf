@@ -141,11 +141,11 @@ module "stages" {
   }
 }
 
-module "storage_integrations" {
-  source = "./privileges/account/storage_integration"
+module "integrations" {
+  source = "./privileges/account/integration"
 
   role_name            = snowflake_role.roles.name
-  storage_integrations = var.storage_integrations
+  integrations = var.integrations
 
   providers = {
     snowflake               = snowflake
@@ -224,7 +224,7 @@ output "privileges" {
     procedures           = module.procedures.return
     sequences            = module.sequences.return
     stages               = module.stages.return
-    storage_integrations = module.storage_integrations.return
+    integrations = module.integrations.return
     streams              = module.streams.return
     tables               = module.tables.return
     tasks                = module.tasks.return

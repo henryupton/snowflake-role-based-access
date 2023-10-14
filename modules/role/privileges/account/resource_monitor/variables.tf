@@ -1,4 +1,4 @@
-variable "warehouses" {
+variable "resource_monitors" {
   type = map(object({
     grants            = list(string)
     with_grant_option = optional(bool)

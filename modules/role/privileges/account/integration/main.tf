@@ -13,7 +13,7 @@ terraform {
 
 locals {
   _objects_by_grant = flatten([
-    for k, v in coalesce(var.warehouses, {}) : [
+    for k, v in coalesce(var.integrations, {}) : [
       for g in v.grants : {
         name = k
 
@@ -37,7 +37,7 @@ resource "snowflake_grant_privileges_to_role" "grant" {
   role_name  = var.role_name
 
   on_account_object {
-    object_type = upper("warehouse")
+    object_type = upper("integration")
     object_name = upper(each.value.name)
   }
 
@@ -47,5 +47,5 @@ resource "snowflake_grant_privileges_to_role" "grant" {
 }
 
 output "return" {
-  value = [ for k, v in coalesce(var.warehouses, {}) : k ]
+  value = [ for k, v in coalesce(var.integrations, {}) : k ]
 }

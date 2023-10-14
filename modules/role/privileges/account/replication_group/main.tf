@@ -13,7 +13,7 @@ terraform {
 
 locals {
   _objects_by_grant = flatten([
-    for k, v in coalesce(var.storage_integrations, {}) : [
+    for k, v in coalesce(var.replication_groups, {}) : [
       for g in v.grants : {
         name = k
 
@@ -37,7 +37,7 @@ resource "snowflake_grant_privileges_to_role" "grant" {
   role_name  = var.role_name
 
   on_account_object {
-    object_type = "STORAGE INTEGRATION"
+    object_type = upper("replication group")
     object_name = upper(each.value.name)
   }
 
@@ -47,5 +47,5 @@ resource "snowflake_grant_privileges_to_role" "grant" {
 }
 
 output "return" {
-  value = [ for k, v in coalesce(var.storage_integrations, {}) : k ]
+  value = [ for k, v in coalesce(var.replication_groups, {}) : k ]
 }

@@ -79,7 +79,7 @@ variable "stages" {
   default = {}
 }
 
-variable "storage_integrations" {
+variable "integrations" {
   type = map(object({
     grants            = list(string)
     with_grant_option = optional(bool)

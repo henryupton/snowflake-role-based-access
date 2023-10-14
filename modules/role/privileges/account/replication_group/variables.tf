@@ -1,4 +1,4 @@
-variable "storage_integrations" {
+variable "replication_groups" {
   type = map(object({
     grants            = list(string)
     with_grant_option = optional(bool)
