@@ -33,11 +33,71 @@ module "schemas" {
   }
 }
 
+module "alerts" {
+  source = "./privileges/object/alert"
+
+  role_name = snowflake_role.roles.name
+  alerts    = var.alerts
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "databases" {
+  source = "./privileges/account/database"
+
+  role_name = snowflake_role.roles.name
+  databases = var.databases
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "dynamic_tables" {
+  source = "./privileges/object/dynamic_table"
+
+  role_name      = snowflake_role.roles.name
+  dynamic_tables = var.dynamic_tables
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "event_tables" {
+  source = "./privileges/object/event_table"
+
+  role_name    = snowflake_role.roles.name
+  event_tables = var.event_tables
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
 module "external_tables" {
   source = "./privileges/object/external_table"
 
   role_name       = snowflake_role.roles.name
   external_tables = var.external_tables
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "failover_groups" {
+  source = "./privileges/account/failover_group"
+
+  role_name       = snowflake_role.roles.name
+  failover_groups = var.failover_groups
 
   providers = {
     snowflake               = snowflake
@@ -93,6 +153,18 @@ module "materialized_views" {
   }
 }
 
+module "password_policies" {
+  source = "./privileges/object/password_policy"
+
+  role_name         = snowflake_role.roles.name
+  password_policies = var.password_policies
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
 module "pipes" {
   source = "./privileges/object/pipe"
 
@@ -117,11 +189,71 @@ module "procedures" {
   }
 }
 
+module "replication_groups" {
+  source = "./privileges/account/replication_group"
+
+  role_name          = snowflake_role.roles.name
+  replication_groups = var.replication_groups
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "resource_monitors" {
+  source = "./privileges/account/resource_monitor"
+
+  role_name         = snowflake_role.roles.name
+  resource_monitors = var.resource_monitors
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "row_access_policies" {
+  source = "./privileges/object/row_access_policy"
+
+  role_name           = snowflake_role.roles.name
+  row_access_policies = var.row_access_policies
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "secrets" {
+  source = "./privileges/object/secret"
+
+  role_name = snowflake_role.roles.name
+  secrets   = var.secrets
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
 module "sequences" {
   source = "./privileges/object/sequence"
 
   role_name = snowflake_role.roles.name
   sequences = var.sequences
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "session_policies" {
+  source = "./privileges/object/session_policy"
+
+  role_name        = snowflake_role.roles.name
+  session_policies = var.session_policies
 
   providers = {
     snowflake               = snowflake
@@ -177,11 +309,35 @@ module "tables" {
   }
 }
 
+module "tags" {
+  source = "./privileges/object/tag"
+
+  role_name = snowflake_role.roles.name
+  tags      = var.tags
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
 module "tasks" {
   source = "./privileges/object/task"
 
   role_name = snowflake_role.roles.name
   tasks     = var.tasks
+
+  providers = {
+    snowflake               = snowflake
+    snowflake.securityadmin = snowflake.securityadmin
+  }
+}
+
+module "users" {
+  source = "./privileges/account/user"
+
+  role_name = snowflake_role.roles.name
+  users     = var.users
 
   providers = {
     snowflake               = snowflake
@@ -215,20 +371,33 @@ module "warehouses" {
 
 output "privileges" {
   value = {
-    external_tables    = module.external_tables.return
-    file_formats       = module.file_formats.return
-    functions          = module.functions.return
-    masking_policies   = module.masking_policies.return
-    materialized_views = module.materialized_views.return
-    pipes              = module.pipes.return
-    procedures         = module.procedures.return
-    sequences          = module.sequences.return
-    stages             = module.stages.return
-    integrations       = module.storage_integrations.return
-    streams            = module.streams.return
-    tables             = module.tables.return
-    tasks              = module.tasks.return
-    views              = module.views.return
-    warehouses         = module.warehouses.return
+    alerts               = module.alerts.return
+    databases            = module.databases.return
+    dynamic_tables       = module.dynamic_tables.return
+    event_tables         = module.event_tables.return
+    external_tables      = module.external_tables.return
+    failover_groups      = module.failover_groups.return
+    file_formats         = module.file_formats.return
+    functions            = module.functions.return
+    masking_policies     = module.masking_policies.return
+    materialized_views   = module.materialized_views.return
+    password_policies    = module.password_policies.return
+    pipes                = module.pipes.return
+    procedures           = module.procedures.return
+    replication_groups   = module.replication_groups.return
+    resource_monitors    = module.resource_monitors.return
+    row_access_policies  = module.row_access_policies.return
+    secrets              = module.secrets.return
+    sequences            = module.sequences.return
+    session_policies     = module.session_policies.return
+    stages               = module.stages.return
+    storage_integrations = module.storage_integrations.return
+    streams              = module.streams.return
+    tables               = module.tables.return
+    tags                 = module.tags.return
+    tasks                = module.tasks.return
+    users                = module.users.return
+    views                = module.views.return
+    warehouses           = module.warehouses.return
   }
 }
