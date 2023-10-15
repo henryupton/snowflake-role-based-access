@@ -22,7 +22,7 @@ module "schemas" {
   source = "./privileges/schema"
 
   role_name = snowflake_role.roles.name
-  payload = merge(
+  payload   = merge(
     var.tables,
     var.stages,
   )
@@ -141,11 +141,11 @@ module "stages" {
   }
 }
 
-module "integrations" {
-  source = "./privileges/account/integration"
+module "storage_integrations" {
+  source = "./privileges/account/storage_integration"
 
   role_name            = snowflake_role.roles.name
-  integrations = var.integrations
+  storage_integrations = var.storage_integrations
 
   providers = {
     snowflake               = snowflake
@@ -215,20 +215,20 @@ module "warehouses" {
 
 output "privileges" {
   value = {
-    external_tables      = module.external_tables.return
-    file_formats         = module.file_formats.return
-    functions            = module.functions.return
-    masking_policies     = module.masking_policies.return
-    materialized_views   = module.materialized_views.return
-    pipes                = module.pipes.return
-    procedures           = module.procedures.return
-    sequences            = module.sequences.return
-    stages               = module.stages.return
-    integrations = module.integrations.return
-    streams              = module.streams.return
-    tables               = module.tables.return
-    tasks                = module.tasks.return
-    views                = module.views.return
-    warehouses           = module.warehouses.return
+    external_tables    = module.external_tables.return
+    file_formats       = module.file_formats.return
+    functions          = module.functions.return
+    masking_policies   = module.masking_policies.return
+    materialized_views = module.materialized_views.return
+    pipes              = module.pipes.return
+    procedures         = module.procedures.return
+    sequences          = module.sequences.return
+    stages             = module.stages.return
+    integrations       = module.storage_integrations.return
+    streams            = module.streams.return
+    tables             = module.tables.return
+    tasks              = module.tasks.return
+    views              = module.views.return
+    warehouses         = module.warehouses.return
   }
 }

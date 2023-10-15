@@ -44,7 +44,7 @@ variable "roles" {
         grants            = list(string)
         with_grant_option = optional(bool)
       })))
-      integrations = optional(map(object({
+      storage_integrations = optional(map(object({
         grants            = list(string)
         with_grant_option = optional(bool)
       })))

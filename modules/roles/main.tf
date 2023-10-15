@@ -29,14 +29,14 @@ module "roles" {
   procedures           = lookup(coalesce(each.value.privileges, {}), "procedures", {})
   sequences            = lookup(coalesce(each.value.privileges, {}), "sequences", {})
   stages               = lookup(coalesce(each.value.privileges, {}), "stages", {})
-  integrations = lookup(coalesce(each.value.privileges, {}), "integrations", {})
+  storage_integrations = lookup(coalesce(each.value.privileges, {}), "storage_integrations", {})
   streams              = lookup(coalesce(each.value.privileges, {}), "streams", {})
   tables               = lookup(coalesce(each.value.privileges, {}), "tables", {})
   tasks                = lookup(coalesce(each.value.privileges, {}), "tasks", {})
   views                = lookup(coalesce(each.value.privileges, {}), "views", {})
   warehouses           = lookup(coalesce(each.value.privileges, {}), "warehouses", {})
 
-  providers            = {
+  providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
   }

@@ -12,20 +12,18 @@ terraform {
 }
 
 locals {
-  _objects_by_grant = flatten([
-    for k, v in coalesce(var.warehouses, {}) : [
-      for g in v.grants : {
+  _objects_by_grant = [
+    for k, v in coalesce(var.warehouses, {}) : {
         name = k
 
-        grant             = g
+        grants             = v.grants
         with_grant_option = v.with_grant_option
       }
-    ]
-  ])
+  ]
 
   objects_by_grant = merge(
     {
-      for i in local._objects_by_grant : lower("${i.name}|${i.grant}") => i
+      for i in local._objects_by_grant : lower(i.name) => i
     }
   )
 }
