@@ -12,20 +12,18 @@ terraform {
 }
 
 locals {
-  _objects_by_grant = flatten([
-    for k, v in coalesce(var.{{ object_plural }}, {}) : [
-      for g in v.grants : {
+  _objects_by_grant = [
+    for k, v in coalesce(var.{{ object_plural }}, {}) : {
         name = k
 
-        grant             = g
+        grants             = v.grants
         with_grant_option = v.with_grant_option
       }
-    ]
-  ])
+  ]
 
   objects_by_grant = merge(
     {
-      for i in local._objects_by_grant : lower("${i.name}|${i.grant}") => i
+      for i in local._objects_by_grant : lower(i.name) => i
     }
   )
 }
@@ -37,7 +35,7 @@ resource "snowflake_grant_privileges_to_role" "grant" {
   role_name  = var.role_name
 
   on_account_object {
-    object_type = upper("{{ object_ws }}")
+    object_type = upper("{{ grant_object_type }}")
     object_name = upper(each.value.name)
   }
 
