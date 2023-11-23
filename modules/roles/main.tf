@@ -22,28 +22,22 @@ module "roles" {
 
   alerts               = lookup(coalesce(each.value.privileges, {}), "alerts ", {})
   databases            = lookup(coalesce(each.value.privileges, {}), "databases ", {})
-  dynamic_tables       = lookup(coalesce(each.value.privileges, {}), "dynamic_tables ", {})
-  event_tables         = lookup(coalesce(each.value.privileges, {}), "event_tables ", {})
   external_tables      = lookup(coalesce(each.value.privileges, {}), "external_tables ", {})
   failover_groups      = lookup(coalesce(each.value.privileges, {}), "failover_groups ", {})
   file_formats         = lookup(coalesce(each.value.privileges, {}), "file_formats ", {})
   functions            = lookup(coalesce(each.value.privileges, {}), "functions ", {})
   masking_policies     = lookup(coalesce(each.value.privileges, {}), "masking_policies ", {})
   materialized_views   = lookup(coalesce(each.value.privileges, {}), "materialized_views ", {})
-  password_policies    = lookup(coalesce(each.value.privileges, {}), "password_policies ", {})
   pipes                = lookup(coalesce(each.value.privileges, {}), "pipes ", {})
   procedures           = lookup(coalesce(each.value.privileges, {}), "procedures ", {})
   replication_groups   = lookup(coalesce(each.value.privileges, {}), "replication_groups ", {})
   resource_monitors    = lookup(coalesce(each.value.privileges, {}), "resource_monitors ", {})
   row_access_policies  = lookup(coalesce(each.value.privileges, {}), "row_access_policies ", {})
-  secrets              = lookup(coalesce(each.value.privileges, {}), "secrets ", {})
   sequences            = lookup(coalesce(each.value.privileges, {}), "sequences ", {})
-  session_policies     = lookup(coalesce(each.value.privileges, {}), "session_policies ", {})
   stages               = lookup(coalesce(each.value.privileges, {}), "stages ", {})
   storage_integrations = lookup(coalesce(each.value.privileges, {}), "storage_integrations ", {})
   streams              = lookup(coalesce(each.value.privileges, {}), "streams ", {})
   tables               = lookup(coalesce(each.value.privileges, {}), "tables ", {})
-  tags                 = lookup(coalesce(each.value.privileges, {}), "tags ", {})
   tasks                = lookup(coalesce(each.value.privileges, {}), "tasks ", {})
   users                = lookup(coalesce(each.value.privileges, {}), "users ", {})
   views                = lookup(coalesce(each.value.privileges, {}), "views ", {})
@@ -72,6 +66,10 @@ module "member_of" {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
   }
+}
+
+output "input" {
+  value = module.roles
 }
 
 output "debug" {
