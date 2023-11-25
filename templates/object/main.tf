@@ -68,6 +68,8 @@ resource "snowflake_grant_privileges_to_role" "grant" {
   }
 
   with_grant_option = each.value.with_grant_option
+
+  provider = snowflake.securityadmin
 }
 
 resource "snowflake_grant_privileges_to_role" "future" {
@@ -85,6 +87,8 @@ resource "snowflake_grant_privileges_to_role" "future" {
   }
 
   with_grant_option = each.value.with_grant_option
+
+  provider = snowflake.securityadmin
 }
 
 module "summary" {
