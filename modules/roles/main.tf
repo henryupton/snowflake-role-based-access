@@ -20,28 +20,28 @@ module "roles" {
 
   comment = each.value.comment
 
-  alerts               = lookup(coalesce(each.value.privileges, {}), "alerts ", {})
-  databases            = lookup(coalesce(each.value.privileges, {}), "databases ", {})
-  external_tables      = lookup(coalesce(each.value.privileges, {}), "external_tables ", {})
-  failover_groups      = lookup(coalesce(each.value.privileges, {}), "failover_groups ", {})
-  file_formats         = lookup(coalesce(each.value.privileges, {}), "file_formats ", {})
-  functions            = lookup(coalesce(each.value.privileges, {}), "functions ", {})
-  masking_policies     = lookup(coalesce(each.value.privileges, {}), "masking_policies ", {})
-  materialized_views   = lookup(coalesce(each.value.privileges, {}), "materialized_views ", {})
-  pipes                = lookup(coalesce(each.value.privileges, {}), "pipes ", {})
-  procedures           = lookup(coalesce(each.value.privileges, {}), "procedures ", {})
-  replication_groups   = lookup(coalesce(each.value.privileges, {}), "replication_groups ", {})
-  resource_monitors    = lookup(coalesce(each.value.privileges, {}), "resource_monitors ", {})
-  row_access_policies  = lookup(coalesce(each.value.privileges, {}), "row_access_policies ", {})
-  sequences            = lookup(coalesce(each.value.privileges, {}), "sequences ", {})
-  stages               = lookup(coalesce(each.value.privileges, {}), "stages ", {})
-  storage_integrations = lookup(coalesce(each.value.privileges, {}), "storage_integrations ", {})
-  streams              = lookup(coalesce(each.value.privileges, {}), "streams ", {})
-  tables               = lookup(coalesce(each.value.privileges, {}), "tables ", {})
-  tasks                = lookup(coalesce(each.value.privileges, {}), "tasks ", {})
-  users                = lookup(coalesce(each.value.privileges, {}), "users ", {})
-  views                = lookup(coalesce(each.value.privileges, {}), "views ", {})
-  warehouses           = lookup(coalesce(each.value.privileges, {}), "warehouses ", {})
+  alerts               = lookup(coalesce(each.value.privileges, {}), "alerts", {})
+  databases            = lookup(coalesce(each.value.privileges, {}), "databases", {})
+  external_tables      = lookup(coalesce(each.value.privileges, {}), "external_tables", {})
+  failover_groups      = lookup(coalesce(each.value.privileges, {}), "failover_groups", {})
+  file_formats         = lookup(coalesce(each.value.privileges, {}), "file_formats", {})
+  functions            = lookup(coalesce(each.value.privileges, {}), "functions", {})
+  masking_policies     = lookup(coalesce(each.value.privileges, {}), "masking_policies", {})
+  materialized_views   = lookup(coalesce(each.value.privileges, {}), "materialized_views", {})
+  pipes                = lookup(coalesce(each.value.privileges, {}), "pipes", {})
+  procedures           = lookup(coalesce(each.value.privileges, {}), "procedures", {})
+  replication_groups   = lookup(coalesce(each.value.privileges, {}), "replication_groups", {})
+  resource_monitors    = lookup(coalesce(each.value.privileges, {}), "resource_monitors", {})
+  row_access_policies  = lookup(coalesce(each.value.privileges, {}), "row_access_policies", {})
+  sequences            = lookup(coalesce(each.value.privileges, {}), "sequences", {})
+  stages               = lookup(coalesce(each.value.privileges, {}), "stages", {})
+  storage_integrations = lookup(coalesce(each.value.privileges, {}), "storage_integrations", {})
+  streams              = lookup(coalesce(each.value.privileges, {}), "streams", {})
+  tables               = lookup(coalesce(each.value.privileges, {}), "tables", {})
+  tasks                = lookup(coalesce(each.value.privileges, {}), "tasks", {})
+  users                = lookup(coalesce(each.value.privileges, {}), "users", {})
+  views                = lookup(coalesce(each.value.privileges, {}), "views", {})
+  warehouses           = lookup(coalesce(each.value.privileges, {}), "warehouses", {})
 
   providers = {
     snowflake               = snowflake
@@ -69,7 +69,7 @@ module "member_of" {
 }
 
 output "input" {
-  value = module.roles
+  value = var.roles
 }
 
 output "debug" {
