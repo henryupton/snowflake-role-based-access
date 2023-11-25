@@ -34,6 +34,8 @@ resource "snowflake_database_grant" "usage" {
   roles     = [var.role_name]
 
   with_grant_option = false
+
+  provider = snowflake.securityadmin
 }
 
 resource "snowflake_grant_privileges_to_role" "usage" {
@@ -47,4 +49,6 @@ resource "snowflake_grant_privileges_to_role" "usage" {
   }
 
   with_grant_option = false
+
+  provider = snowflake.securityadmin
 }
