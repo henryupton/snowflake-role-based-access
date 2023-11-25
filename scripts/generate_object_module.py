@@ -29,10 +29,12 @@ OBJECTS = {
         "type": "object"
     },
     "dynamic_table": {
-        "type": "object"
+        "type": "object",
+        "enabled": False
     },
     "event_table": {
-        "type": "object"
+        "type": "object",
+        "enabled": False
     },
     "external_table": {
         "type": "object"
@@ -52,7 +54,8 @@ OBJECTS = {
     },
     "password_policy": {
         "type": "object",
-        "plural": "password_policies"
+        "plural": "password_policies",
+        "enabled": False
     },
     "pipe": {
         "type": "object"
@@ -65,14 +68,16 @@ OBJECTS = {
         "plural": "row_access_policies"
     },
     "secret": {
-        "type": "object"
+        "type": "object",
+        "enabled": False
     },
     "sequence": {
         "type": "object"
     },
     "session_policy": {
         "type": "object",
-        "plural": "session_policies"
+        "plural": "session_policies",
+        "enabled": False
     },
     "stage": {
         "type": "object"
@@ -84,7 +89,8 @@ OBJECTS = {
         "type": "object"
     },
     "tag": {
-        "type": "object"
+        "type": "object",
+        "enabled": False
     },
     "task": {
         "type": "object"
@@ -97,12 +103,16 @@ OBJECTS = {
 
 def main():
     for k, v in OBJECTS.items():
+        if not v.get("enabled", True):
+            continue
+
         values = {
             "object": k,
             "object_plural": v.get("plural", f"{k}s"),
             "object_ws": k.replace("_", " "),
             "object_plural_ws": v.get("plural", f"{k}s").replace("_", " "),
             "grant_object_type": v.get("grant_object_type", k).replace("_", " "),
+            "type": v["type"],
         }
 
         for file in ("main.tf", "variables.tf"):
