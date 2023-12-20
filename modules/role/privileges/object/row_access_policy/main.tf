@@ -2,11 +2,12 @@ terraform {
   required_providers {
     snowflake = {
       source                = "Snowflake-Labs/snowflake"
-      version               = "0.71.0"
+      version               = "0.80.0"
       configuration_aliases = [
         snowflake,
         snowflake.securityadmin,
-      ]
+        snowflake.accountadmin,
+    ]
     }
   }
 }
@@ -60,7 +61,7 @@ resource "snowflake_grant_privileges_to_role" "grant" {
 
   role_name = upper(var.role_name)
 
-  privileges = each.value.grants
+  privileges = [for g in each.value.grants : upper(g)]
 
   on_schema_object {
     object_type = upper("row access policy")
@@ -77,7 +78,7 @@ resource "snowflake_grant_privileges_to_role" "future" {
 
   role_name = var.role_name
 
-  privileges = each.value.grants
+  privileges = [for g in each.value.grants : upper(g)]
 
   on_schema_object {
     future {

@@ -2,11 +2,12 @@ terraform {
   required_providers {
     snowflake = {
       source                = "Snowflake-Labs/snowflake"
-      version               = "0.71.0"
+      version               = "0.80.0"
       configuration_aliases = [
         snowflake,
         snowflake.securityadmin,
-      ]
+        snowflake.accountadmin,
+    ]
     }
   }
 }
@@ -30,6 +31,7 @@ module "schemas" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -42,6 +44,7 @@ module "alerts" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -54,6 +57,7 @@ module "databases" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -66,6 +70,7 @@ module "external_tables" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -78,6 +83,7 @@ module "failover_groups" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -90,6 +96,7 @@ module "file_formats" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -102,6 +109,7 @@ module "functions" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -114,6 +122,7 @@ module "masking_policies" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -126,6 +135,7 @@ module "materialized_views" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -138,6 +148,7 @@ module "pipes" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -150,6 +161,7 @@ module "procedures" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -162,6 +174,7 @@ module "replication_groups" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -174,6 +187,7 @@ module "resource_monitors" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -186,6 +200,7 @@ module "row_access_policies" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -198,6 +213,7 @@ module "sequences" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -210,6 +226,7 @@ module "stages" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -222,6 +239,7 @@ module "storage_integrations" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -234,6 +252,7 @@ module "streams" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -246,6 +265,7 @@ module "tables" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -258,6 +278,7 @@ module "tasks" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -270,6 +291,7 @@ module "users" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -282,6 +304,7 @@ module "views" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -294,6 +317,7 @@ module "warehouses" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 

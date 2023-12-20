@@ -17,6 +17,7 @@ module "roles" {
   providers = {
     snowflake               = snowflake
     snowflake.securityadmin = snowflake.securityadmin
+    snowflake.accountadmin  = snowflake.accountadmin
   }
 }
 
@@ -46,6 +47,7 @@ data "snowflake_current_account" "this" {}
 
 output "state" {
   value = {
+    input   = module.roles.input
     roles   = module.roles.debug
     users   = module.users.debug
     account = {

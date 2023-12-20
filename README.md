@@ -106,3 +106,13 @@ users:
 ## Limitations.
 Case-sensitive object names are not supported. All identifiers are converted
 to upper case in align with [Snowflake's recommendations](https://docs.snowflake.com/en/sql-reference/identifiers-syntax). 
+
+## Testing
+
+NOTE: As a quirk of Terraform's `terraform test` command, any environment variables prefixed with
+`TF_VAR_` will not be ignored and will result in an error.
+
+These can be unset with the following command:
+```bash
+unset $(env | grep -o '^TF_VAR_[^=]*')
+```

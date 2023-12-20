@@ -2,11 +2,12 @@ terraform {
   required_providers {
     snowflake = {
       source                = "Snowflake-Labs/snowflake"
-      version               = "0.71.0"
+      version               = "0.80.0"
       configuration_aliases = [
         snowflake,
         snowflake.securityadmin,
-      ]
+        snowflake.accountadmin,
+    ]
     }
   }
 }
@@ -16,7 +17,7 @@ locals {
     for k, v in coalesce(var.users, {}) : {
         name = k
 
-        grants             = v.grants
+        grants            = v.grants
         with_grant_option = v.with_grant_option
       }
   ]
@@ -31,7 +32,7 @@ locals {
 resource "snowflake_grant_privileges_to_role" "grant" {
   for_each = local.objects_by_grant
 
-  privileges = each.value.grants
+  privileges = [for g in each.value.grants : upper(g)]
   role_name  = var.role_name
 
   on_account_object {
